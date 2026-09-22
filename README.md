@@ -8,13 +8,31 @@ The stock Input Club KLL firmware is replaced by QMK; both halves are flashed wi
 | Layer | How to reach it | What it does |
 | --- | --- | --- |
 | BASE | default | Standard ErgoDox QWERTY with macOS mods on the thumbs (Alt, Cmd left; Cmd, Ctrl right). Esc sits in the Caps Lock position. |
-| SYM | hold either inner 1.5u key on the QWERTY row | F-keys on the number row, brackets and symbols on the left, numpad on the right, media on the right thumb. |
-| VIM | hold Esc (Caps Lock position); tap for Esc | H/J/K/L arrows, W/E and B word jumps, I/A and 0/4 line start/end, G and ; document top/end, U/D page up/down, Z/R undo/redo, X/C/V cut/copy/paste, F and / find, N find next. Shift passes through, so Shift+J extends a selection. |
-| CMUX | hold the top inner 1.5u key on the left half | Drives cmux: H/J/K/L focus panes, [ ] cycle surfaces, , . cycle workspaces, 1 to 9 jump to a workspace, D/S split, T new tab, W close workspace, Z zoom, B sidebar, P palette, N new workspace. Left big thumb key opens the workspace switcher. M and the right inner big thumb key send Shift+Tab (Claude Code mode cycle), the left inner big thumb key sends Esc (interrupt the agent), Q sends Ctrl+C. |
+| SYM | tap to toggle or hold either inner 1.5u key on the QWERTY row | F-keys on the number row, brackets and symbols on the left, numpad on the right, media on the right thumb. |
+| VIM | tap Esc (sends Esc and enters normal mode); hold Esc for momentary use, or hold it in normal mode to leave | A modal vim engine built on macOS editing shortcuts, see below. |
+| CMUX | tap to toggle or hold the top inner 1.5u key on the left half | Drives cmux with its default shortcuts: H/J/K/L focus panes, [ ] cycle surfaces, , . cycle workspaces, 1 to 9 jump to a workspace, D/S split, T new tab, W close workspace, Z zoom, B sidebar, P palette, N new workspace. Left big thumb key opens the workspace switcher. M and the right inner big thumb key send Shift+Tab (Claude Code mode cycle), the left inner big thumb key sends Esc (interrupt the agent), Q sends Ctrl+C. |
 
-The right-hand LEDs show the active layer: 1 = SYM, 2 = VIM, 3 = CMUX.
+### Vim engine
 
-Every cmux key sends the cmux default shortcut, so `~/.config/cmux/cmux.json` must not rebind them. If you change a cmux binding, update the matching `CX_*` define in `keymaps/fd/keymap.c`.
+Normal mode interprets letters, digits and `/`; everything else (thumbs, mods, arrows) passes through.
+
+| Group | Keys |
+| --- | --- |
+| motions | `h j k l`, `w e` word right, `b` word left, `0 ^ $`, `gg G`, any motion takes a count: `23e`, `10j` |
+| insert | `i`, `a` (after cursor), `I` (line start), `A` (line end), `o O` (open a line), `s S`, `c C`, `/` (opens find) |
+| edit | `x X`, `d{motion}` `dd` `D`, `y{motion}` `yy` `Y`, `p`, `u` undo, `U` or Ctrl+r redo, `J` join |
+| visual | `v`, `V` (whole lines); motions extend, `d x y c p` act on the selection, Esc returns to normal |
+| objects | `iw` after an operator or in visual selects the word under the cursor |
+| paging | Ctrl+d Ctrl+u Ctrl+f Ctrl+b |
+
+Deletes go through Cmd+X and yanks through Cmd+C, so `p` pastes the system clipboard. Not implemented: `.` repeat, registers, `r`, `%`, `*`, text objects other than `iw`, and `:` commands.
+
+### Screens and lights
+
+- The half on USB shows the active layer, a one-line cheat sheet, WPM and Caps.
+- The other half shows the vim mode (`INSERT`, `NORMAL`, `VISUAL`, `V-LINE`) and the command typed so far, for example `23d`. That state is synced across the link.
+- LCD backlight: white on BASE, blue on SYM, green in vim normal, amber in visual, orange on CMUX.
+- Per-key backlight (white only on this board) lights the keys that do something on the active layer.
 
 ## Build
 
@@ -34,5 +52,7 @@ first: without `EE_HANDS`, QMK treats whichever half is on USB as the left one.
 2. `./flash.sh`
 3. Connect only the right half, press its program button, run the same command.
 4. Reconnect the halves and plug USB into the left half.
+
+`configurator.json` is an export for https://config.qmk.fm (keyboard `input_club/ergodox_infinity`). It cannot express the vim engine, the screens or the lights, so treat it as a viewer, not the source of truth. Keep it out of `keymaps/fd/`, where QMK would compile it instead of the C file.
 
 To go back to the stock firmware, flash a build from the Input Club configurator the same way.
