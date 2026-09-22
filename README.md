@@ -14,7 +14,7 @@ The stock Input Club KLL firmware is replaced by QMK; both halves are flashed wi
 
 The right-hand LEDs show the active layer: 1 = SYM, 2 = VIM, 3 = CMUX.
 
-Pane focus and surface cycling send the bindings from `~/.config/cmux/cmux.json` (Shift+arrows and Cmd+Opt+[ / ]), not the cmux defaults. If that file changes, update the `CX_PANE_*` and `CX_SURF_*` defines in `keymaps/fd/keymap.c`.
+Every cmux key sends the cmux default shortcut, so `~/.config/cmux/cmux.json` must not rebind them. If you change a cmux binding, update the matching `CX_*` define in `keymaps/fd/keymap.c`.
 
 ## Build
 

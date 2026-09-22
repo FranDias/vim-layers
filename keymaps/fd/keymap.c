@@ -23,14 +23,13 @@ enum layers {
 #define FIND_N LGUI(KC_G)
 #define FIND_P LAG(KC_G)
 
-// cmux: pane focus follows ~/.config/cmux/cmux.json (rebound to Shift+arrows),
-// surfaces follow the same file (Cmd+Opt+[ / ]); everything else is the cmux default.
-#define CX_PANE_L LSFT(KC_LEFT)
-#define CX_PANE_D LSFT(KC_DOWN)
-#define CX_PANE_U LSFT(KC_UP)
-#define CX_PANE_R LSFT(KC_RGHT)
-#define CX_SURF_P LAG(KC_LBRC)
-#define CX_SURF_N LAG(KC_RBRC)
+// cmux default shortcuts (https://cmux.com/docs/keyboard-shortcuts)
+#define CX_PANE_L LAG(KC_LEFT)
+#define CX_PANE_D LAG(KC_DOWN)
+#define CX_PANE_U LAG(KC_UP)
+#define CX_PANE_R LAG(KC_RGHT)
+#define CX_SURF_P LSG(KC_LBRC)
+#define CX_SURF_N LSG(KC_RBRC)
 #define CX_WS_P LCG(KC_LBRC)
 #define CX_WS_N LCG(KC_RBRC)
 #define CX_WS_NEW LGUI(KC_N)
