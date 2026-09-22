@@ -7,9 +7,9 @@ The stock Input Club KLL firmware is replaced by QMK; both halves are flashed wi
 
 | Layer | How to reach it | What it does |
 | --- | --- | --- |
-| BASE | default | Standard ErgoDox QWERTY with macOS mods on the thumbs (Alt, Cmd left; Cmd, Ctrl right). Esc sits in the Caps Lock position. |
+| BASE | default | Standard ErgoDox QWERTY with macOS mods on the thumbs (Alt, Cmd left; Cmd, Ctrl right). The Caps Lock position is the vim mode key; a plain Esc sits on the tall inner key right of N. |
 | SYM | tap to toggle or hold either inner 1.5u key on the QWERTY row | F-keys on the number row, brackets and symbols on the left, numpad on the right, media on the right thumb. |
-| VIM | tap Esc (sends Esc and enters normal mode); hold Esc for momentary use, or hold it in normal mode to leave | A modal vim engine built on macOS editing shortcuts, see below. |
+| VIM | tap the Esc key in the Caps Lock position to enter normal mode (nothing is sent); tap it again to send Esc and return to insert; hold it for momentary normal mode. The tall inner key right of N is a plain Esc. | A modal vim engine built on macOS editing shortcuts, see below. |
 | CMUX | tap to toggle or hold the top inner 1.5u key on the left half | Drives cmux with its default shortcuts: H/J/K/L focus panes, [ ] cycle surfaces, , . cycle workspaces, 1 to 9 jump to a workspace, D/S split, T new tab, W close workspace, Z zoom, B sidebar, P palette, N new workspace. Left big thumb key opens the workspace switcher. M and the right inner big thumb key send Shift+Tab (Claude Code mode cycle), the left inner big thumb key sends Esc (interrupt the agent), Q sends Ctrl+C. |
 
 ### Vim engine

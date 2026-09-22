@@ -86,7 +86,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |  Tab   |   Q  |   W  |   E  |   R  |   T  | SYM  |           | SYM  |   Y  |   U  |   I  |   O  |   P  |   \    |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * |Esc/VIM |   A  |   S  |   D  |   F  |   G  |------|           |------|   H  |   J  |   K  |   L  |   ;  |   '    |
- * |--------+------+------+------+------+------| Hyper|           | Meh  |------+------+------+------+------+--------|
+ * |--------+------+------+------+------+------| Hyper|           | Esc  |------+------+------+------+------+--------|
  * | Shift  |   Z  |   X  |   C  |   V  |   B  |      |           |      |   N  |   M  |   ,  |   .  |   /  | Shift  |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
  *   | Ctrl |  Alt |  Cmd | Left | Right|                                       |  Up  | Down |   [  |   ]  |  =   |
@@ -99,7 +99,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      | End  |       | PgDn |      |      |
  *                                 `--------------------'       `--------------------'
  *
- * CMUX and SYM: tap to toggle, hold for momentary. Esc: tap for Esc + vim normal mode, hold for momentary vim.
+ * CMUX and SYM: tap to toggle, hold for momentary. Esc/VIM: tap enters normal mode, tap again sends Esc and returns
+ * to insert, hold for momentary normal mode. The tall key right of N is a plain Esc.
  */
 [BASE] = LAYOUT_ergodox(
     KC_GRV,   KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    TT(CMUX),
@@ -114,7 +115,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_DEL,   KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
     TT(SYM),  KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
               KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-    KC_MEH,   KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
+    KC_ESC,   KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                        KC_UP,   KC_DOWN, KC_LBRC, KC_RBRC, KC_EQL,
     KC_RGUI,  KC_RCTL,
     KC_PGUP,
@@ -538,20 +539,33 @@ done:
     return false;
 }
 
+// Tap from insert: normal mode, nothing sent. Tap from normal: send Esc, back to insert.
+// Tap from visual: collapse to normal. Hold from insert: momentary normal mode.
 static bool process_vim_esc(keyrecord_t *record) {
     static uint16_t held_since;
+    static uint8_t  mode_at_press;
     if (record->event.pressed) {
-        held_since = timer_read();
-        if (vim.mode == VM_VISUAL || vim.mode == VM_VLINE) {
-            tap_code(KC_RGHT);
+        held_since    = timer_read();
+        mode_at_press = vim.mode;
+        if (mode_at_press == VM_INSERT) {
+            vim_set_mode(VM_NORMAL);
         }
-        vim_set_mode(VM_NORMAL);
         return false;
     }
-    if (timer_elapsed(held_since) < VIM_HOLD_TERM) {
-        tap_code(KC_ESC);
-    } else {
-        vim_set_mode(VM_INSERT);
+    switch (mode_at_press) {
+        case VM_INSERT:
+            if (timer_elapsed(held_since) >= VIM_HOLD_TERM) {
+                vim_set_mode(VM_INSERT);
+            }
+            break;
+        case VM_VISUAL:
+        case VM_VLINE:
+            tap_code(KC_RGHT);
+            vim_set_mode(VM_NORMAL);
+            break;
+        default:
+            tap_code(KC_ESC);
+            vim_set_mode(VM_INSERT);
     }
     return false;
 }
