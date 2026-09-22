@@ -38,8 +38,8 @@
       "KC_LALT",
       "KC_LGUI",
       "KC_HOME",
-      "KC_SPC",
       "KC_BSPC",
+      "KC_TAB",
       "KC_END",
       "KC_DEL",
       "KC_6",
@@ -77,8 +77,8 @@
       "KC_RCTL",
       "KC_PGUP",
       "KC_PGDN",
-      "KC_TAB",
-      "KC_ENT"
+      "KC_ENT",
+      "KC_SPC"
     ],
     [
       "KC_TRNS",

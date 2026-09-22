@@ -95,7 +95,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                        | Alt  | Cmd  |       | Cmd  | Ctrl |
  *                                 ,------|------|------|       |------+------+------.
  *                                 |      |      | Home |       | PgUp |      |      |
- *                                 | Space| Bksp |------|       |------| Tab  |Enter |
+ *                                 | Bksp | Tab  |------|       |------|Enter |Space |
  *                                 |      |      | End  |       | PgDn |      |      |
  *                                 `--------------------'       `--------------------'
  *
@@ -109,7 +109,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_LCTL,  KC_LALT, KC_LGUI, KC_LEFT, KC_RGHT,
                                                   KC_LALT, KC_LGUI,
                                                            KC_HOME,
-                                         KC_SPC,  KC_BSPC, KC_END,
+                                         KC_BSPC, KC_TAB,  KC_END,
 
     KC_DEL,   KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
     TT(SYM),  KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
@@ -118,7 +118,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        KC_UP,   KC_DOWN, KC_LBRC, KC_RBRC, KC_EQL,
     KC_RGUI,  KC_RCTL,
     KC_PGUP,
-    KC_PGDN,  KC_TAB,  KC_ENT
+    KC_PGDN,  KC_ENT,  KC_SPC
 ),
 
 /* SYM (tap or hold either inner 1.5u key on the QWERTY row)
