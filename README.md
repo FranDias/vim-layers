@@ -1,6 +1,7 @@
-# ErgoDox Infinity keymap (QMK)
+# vim-layers
 
-Keymap for the Input Club / Massdrop **Infinity ErgoDox** (`input_club/ergodox_infinity` in QMK).
+A QMK keymap for the Input Club / Massdrop **Infinity ErgoDox** with a modal vim engine, a cmux layer, and
+per-layer screens and lights. Keymap for the **Infinity ErgoDox** (`input_club/ergodox_infinity` in QMK).
 The stock Input Club KLL firmware is replaced by QMK; both halves are flashed with the same image.
 
 ## Layers
@@ -43,6 +44,8 @@ brew install qmk/qmk/qmk        # once; also `qmk setup -y -H ~/qmk_firmware`
 
 Homebrew installs the ARM toolchain keg-only, so `build.sh` and `flash.sh` put it on PATH themselves.
 
+A rendered view of every layer is in `keymap-viewer.html`; open it in a browser.
+
 ## Flash
 
 Each half has its own MCU, so flash them one at a time with the same image. Plug the **left** half into USB
@@ -56,3 +59,7 @@ first: without `EE_HANDS`, QMK treats whichever half is on USB as the left one.
 `configurator.json` is an export for https://config.qmk.fm (keyboard `input_club/ergodox_infinity`). It cannot express the vim engine, the screens or the lights, so treat it as a viewer, not the source of truth. Keep it out of `keymaps/fd/`, where QMK would compile it instead of the C file.
 
 To go back to the stock firmware, flash a build from the Input Club configurator the same way.
+
+## Licence
+
+GPL-2.0-or-later, the same as QMK.
