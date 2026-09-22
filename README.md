@@ -20,9 +20,10 @@ Pane focus and surface cycling send the bindings from `~/.config/cmux/cmux.json`
 
 ```sh
 brew install qmk/qmk/qmk        # once; also `qmk setup -y -H ~/qmk_firmware`
-./link.sh                       # symlinks keymaps/fd into ~/qmk_firmware
-qmk compile -kb input_club/ergodox_infinity -km fd
+./build.sh                      # links keymaps/fd into ~/qmk_firmware and compiles
 ```
+
+Homebrew installs the ARM toolchain keg-only, so `build.sh` and `flash.sh` put it on PATH themselves.
 
 ## Flash
 
@@ -30,7 +31,7 @@ Each half has its own MCU, so flash them one at a time with the same image. Plug
 first: without `EE_HANDS`, QMK treats whichever half is on USB as the left one.
 
 1. Connect only the left half. Press the program button through the hole on the underside, above the thumb cluster.
-2. `qmk flash -kb input_club/ergodox_infinity -km fd`
+2. `./flash.sh`
 3. Connect only the right half, press its program button, run the same command.
 4. Reconnect the halves and plug USB into the left half.
 
