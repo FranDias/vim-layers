@@ -1,6 +1,6 @@
 # vim-layers
 
-A QMK keymap for the Input Club / Massdrop **Infinity ErgoDox** with a modal vim engine, a cmux layer, and
+A QMK keymap for the Input Club / Massdrop **Infinity ErgoDox** with a modal vim engine, a window screenshot key, and
 per-layer screens and lights. Keymap for the **Infinity ErgoDox** (`input_club/ergodox_infinity` in QMK).
 The stock Input Club KLL firmware is replaced by QMK; both halves are flashed with the same image.
 
@@ -8,10 +8,9 @@ The stock Input Club KLL firmware is replaced by QMK; both halves are flashed wi
 
 | Layer | How to reach it | What it does |
 | --- | --- | --- |
-| BASE | default | Standard ErgoDox QWERTY with macOS mods on the thumbs (Alt, Cmd left; Cmd, Ctrl right). The Caps Lock position is the vim mode key; a plain Esc sits on the tall inner key right of N. |
+| BASE | default | Standard ErgoDox QWERTY with macOS mods on the thumbs (Alt, Cmd left; Cmd, Ctrl right). The Caps Lock position is the vim mode key; a plain Esc sits on the tall inner key right of N. The top inner 1.5u key on the left half is **Shot**: it sends Cmd+Shift+4 then Space, so the next click captures a window. |
 | SYM | tap to toggle or hold either inner 1.5u key on the QWERTY row | F-keys on the number row, brackets and symbols on the left, numpad on the right, media on the right thumb. |
 | VIM | tap the Esc key in the Caps Lock position to enter normal mode (nothing is sent); tap it again to send Esc and return to insert; hold it for momentary normal mode. The tall inner key right of N is a plain Esc. | A modal vim engine built on macOS editing shortcuts, see below. |
-| CMUX | tap to toggle or hold the top inner 1.5u key on the left half | Drives cmux with its default shortcuts: H/J/K/L focus panes, [ ] cycle surfaces, , . cycle workspaces, 1 to 9 jump to a workspace, D/S split, T new tab, W close workspace, Z zoom, B sidebar, P palette, N new workspace. Left big thumb key opens the workspace switcher. M and the right inner big thumb key send Shift+Tab (Claude Code mode cycle), the left inner big thumb key sends Esc (interrupt the agent), Q sends Ctrl+C. |
 
 ### Vim engine
 
@@ -32,7 +31,7 @@ Deletes go through Cmd+X and yanks through Cmd+C, so `p` pastes the system clipb
 
 - The half on USB shows the active layer, a one-line cheat sheet, WPM and Caps.
 - The other half shows the vim mode (`INSERT`, `NORMAL`, `VISUAL`, `V-LINE`) and the command typed so far, for example `23d`. That state is synced across the link.
-- LCD backlight: white on BASE, blue on SYM, green in vim normal, amber in visual, orange on CMUX.
+- LCD backlight: white on BASE, blue on SYM, green in vim normal, amber in visual.
 - Per-key backlight (white only on this board) lights the keys that do something on the active layer.
 
 ## Build

@@ -6,11 +6,11 @@ enum layers {
     BASE,
     SYM,
     VIM,
-    CMUX,
 };
 
 enum custom_keycodes {
     VIM_ESC = SAFE_RANGE,
+    WIN_SHOT,
 };
 
 enum vim_mode {
@@ -33,55 +33,14 @@ static vim_state_t vim_remote; // mirrored to the other half for its display
 #define VIM_HOLD_TERM 200
 #define VIM_MAX_COUNT 999
 
-// cmux default shortcuts (https://cmux.com/docs/keyboard-shortcuts)
-#define CX_PANE_L LAG(KC_LEFT)
-#define CX_PANE_D LAG(KC_DOWN)
-#define CX_PANE_U LAG(KC_UP)
-#define CX_PANE_R LAG(KC_RGHT)
-#define CX_SURF_P LSG(KC_LBRC)
-#define CX_SURF_N LSG(KC_RBRC)
-#define CX_WS_P LCG(KC_LBRC)
-#define CX_WS_N LCG(KC_RBRC)
-#define CX_WS_NEW LGUI(KC_N)
-#define CX_WS_GO LGUI(KC_P)
-#define CX_WS_DONE LGUI(KC_SCLN)
-#define CX_WS_CLOSE LSG(KC_W)
-#define CX_TAB_NEW LGUI(KC_T)
-#define CX_TAB_CLOSE LGUI(KC_W)
-#define CX_TAB_REOPEN LSG(KC_T)
-#define CX_TAB_RENAME LGUI(KC_R)
-#define CX_SPLIT_R LGUI(KC_D)
-#define CX_SPLIT_D LSG(KC_D)
-#define CX_ZOOM LSG(KC_ENT)
-#define CX_EQUALIZE LCG(LSFT(KC_EQL))
-#define CX_RESIZE_L LCTL(LSFT(KC_H))
-#define CX_RESIZE_D LCTL(LSFT(KC_J))
-#define CX_RESIZE_U LCTL(LSFT(KC_K))
-#define CX_RESIZE_R LCTL(LSFT(KC_L))
-#define CX_SIDEBAR LGUI(KC_B)
-#define CX_RSIDEBAR LAG(KC_B)
-#define CX_PALETTE LSG(KC_P)
-#define CX_SEARCH LAG(KC_F)
-#define CX_NOTIFS LGUI(KC_I)
-#define CX_UNREAD LSG(KC_U)
-#define CX_DIFF LCG(LSFT(KC_D))
-#define CX_BROWSER LSG(KC_L)
-#define CX_TEXTBOX LSG(KC_A)
-#define CX_COPYMODE LSG(KC_M)
-#define CX_CLEAR LSG(KC_K)
-#define CX_FLASH LSG(KC_H)
-#define CX_ALLWIN LCAG(KC_DOT)
-
-// agent keys: Claude Code cycles permission mode on Shift+Tab, interrupts on Esc
-#define AI_MODE LSFT(KC_TAB)
-#define AI_STOP KC_ESC
-#define AI_KILL LCTL(KC_C)
+// macOS needs a beat after Cmd+Shift+4 before Space switches the crosshair to window capture
+#define WIN_SHOT_DELAY 150
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* BASE (macOS)
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
- * |   `    |   1  |   2  |   3  |   4  |   5  | CMUX |           | Del  |   6  |   7  |   8  |   9  |   0  |   -    |
+ * |   `    |   1  |   2  |   3  |   4  |   5  | Shot |           | Del  |   6  |   7  |   8  |   9  |   0  |   -    |
  * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
  * |  Tab   |   Q  |   W  |   E  |   R  |   T  | SYM  |           | SYM  |   Y  |   U  |   I  |   O  |   P  |   \    |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
@@ -99,11 +58,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      | End  |       | PgDn |      |      |
  *                                 `--------------------'       `--------------------'
  *
- * CMUX and SYM: tap to toggle, hold for momentary. Esc/VIM: tap enters normal mode, tap again sends Esc and returns
- * to insert, hold for momentary normal mode. The tall key right of N is a plain Esc.
+ * Shot: Cmd+Shift+4 then Space, the macOS window screenshot. SYM: tap to toggle, hold for momentary.
+ * Esc/VIM: tap enters normal mode, tap again sends Esc and returns to insert, hold for momentary normal mode. The tall key right of N is a plain Esc.
  */
 [BASE] = LAYOUT_ergodox(
-    KC_GRV,   KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    TT(CMUX),
+    KC_GRV,   KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    WIN_SHOT,
     KC_TAB,   KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    TT(SYM),
     VIM_ESC,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,
     KC_LSFT,  KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_HYPR,
@@ -191,48 +150,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______,  _______,
     _______,
     _______,  _______, _______
-),
-
-/* CMUX (tap or hold the top inner 1.5u key on the left half)
- *   H/J/K/L focus panes, [ ] cycle surfaces, , . cycle workspaces, 1-9 jump to a workspace.
- *
- * ,--------------------------------------------------.           ,--------------------------------------------------.
- * | AllWin | WS 1 | WS 2 | WS 3 | WS 4 | WS 5 |(held)|           |      | WS 6 | WS 7 | WS 8 | WS 9 |      |        |
- * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
- * |        |Kill^C|CloseW|Equal |Rename|NewTab|      |           |      |Unread|      |Notifs|Browse|Palett|        |
- * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * |        |TxtBox|SplitD|SplitR|Search| Diff |------|           |------|Pane< |Pane v|Pane ^|Pane> | Done |        |
- * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * |        | Zoom |Clear |CopyMd|      |Sidebr|      |           |      | NewWS| Mode |PrevWS|NextWS|Flash |        |
- * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   |      |      |      |Resz< |Resz> |                                       |Resz ^|Resz v| Surf<| Surf>|Reopen|
- *   `----------------------------------'                                       `----------------------------------'
- *                                        ,-------------.       ,-------------.
- *                                        |      |      |       |      |      |
- *                                 ,------|------|------|       |------+------+------.
- *                                 |      |      |      |       |      |      |      |
- *                                 |GoToWS| Stop |------|       |------| Mode |      |
- *                                 |      |      |      |       |      |      |      |
- *                                 `--------------------'       `--------------------'
- */
-[CMUX] = LAYOUT_ergodox(
-    CX_ALLWIN, LGUI(KC_1), LGUI(KC_2), LGUI(KC_3), LGUI(KC_4), LGUI(KC_5), _______,
-    _______,   AI_KILL,    CX_WS_CLOSE, CX_EQUALIZE, CX_TAB_RENAME, CX_TAB_NEW, _______,
-    _______,   CX_TEXTBOX, CX_SPLIT_D, CX_SPLIT_R, CX_SEARCH,  CX_DIFF,
-    _______,   CX_ZOOM,    CX_CLEAR,   CX_COPYMODE, _______,   CX_SIDEBAR, _______,
-    _______,   _______,    _______,    CX_RESIZE_L, CX_RESIZE_R,
-                                                          _______, _______,
-                                                                   _______,
-                                              CX_WS_GO,   AI_STOP, _______,
-
-    _______,   LGUI(KC_6), LGUI(KC_7), LGUI(KC_8), LGUI(KC_9), _______,   _______,
-    _______,   CX_UNREAD,  _______,    CX_NOTIFS,  CX_BROWSER, CX_PALETTE, _______,
-               CX_PANE_L,  CX_PANE_D,  CX_PANE_U,  CX_PANE_R,  CX_WS_DONE, _______,
-    _______,   CX_WS_NEW,  AI_MODE,    CX_WS_P,    CX_WS_N,    CX_FLASH,  _______,
-                           CX_RESIZE_U, CX_RESIZE_D, CX_SURF_P, CX_SURF_N, CX_TAB_REOPEN,
-    _______,   _______,
-    _______,
-    _______,   AI_MODE,    _______
 ),
 };
 
@@ -570,7 +487,17 @@ static bool process_vim_esc(keyrecord_t *record) {
     return false;
 }
 
+static void window_screenshot(void) {
+    tap_code16(LSG(KC_4));
+    wait_ms(WIN_SHOT_DELAY);
+    tap_code(KC_SPC);
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (keycode == WIN_SHOT) {
+        if (record->event.pressed) window_screenshot();
+        return false;
+    }
     if (keycode == VIM_ESC) {
         return process_vim_esc(record);
     }
@@ -617,7 +544,6 @@ static const vim_state_t *vim_view(void) {
 static void lcd_color_for_state(void) {
     const vim_state_t *v = vim_view();
     switch (get_highest_layer(layer_state)) {
-        case CMUX: ergodox_infinity_lcd_color(UINT16_MAX, UINT16_MAX / 5, 0); return;             // orange
         case SYM:  ergodox_infinity_lcd_color(0, UINT16_MAX / 3, UINT16_MAX); return;              // blue
         case VIM:
             if (v->mode == VM_VISUAL || v->mode == VM_VLINE) {
@@ -639,7 +565,6 @@ static const char *layer_name(uint8_t layer) {
     switch (layer) {
         case SYM:  return "SYM";
         case VIM:  return "VIM";
-        case CMUX: return "CMUX";
         default:   return "BASE";
     }
 }
@@ -648,7 +573,6 @@ static const char *layer_hint(uint8_t layer) {
     switch (layer) {
         case SYM:  return "F-keys  sym  numpad";
         case VIM:  return "hjkl wbe 0$ dcy v iw";
-        case CMUX: return "hjkl pane []tab ,.ws";
         default:   return "";
     }
 }
